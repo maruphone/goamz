@@ -393,6 +393,14 @@ func (q *Queue) SendMessageBatch(msgList []Message) (resp *SendMessageBatchRespo
 		params[fmt.Sprintf("SendMessageBatchRequestEntry.%d.Id", count)] = fmt.Sprintf("msg-%d", count)
 		params[fmt.Sprintf("SendMessageBatchRequestEntry.%d.MessageBody", count)] = msg.Body
 
+		i := 1
+		for _, v := range msg.MessageAttribute {
+			params[fmt.Sprintf("SendMessageBatchRequestEntry.%d.MessageAttribute.%d.Name", count, i)] = v.Name
+			params[fmt.Sprintf("SendMessageBatchRequestEntry.%d.MessageAttribute.%d.Value.StringValue", count, i)] = v.Value.StringValue
+			params[fmt.Sprintf("SendMessageBatchRequestEntry.%d.MessageAttribute.%d.Value.DataType", count, i)] = v.Value.DataType
+			i++
+		}
+
 		if msg.DelaySeconds > 0 {
 			params[fmt.Sprintf("SendMessageBatchRequestEntry.%d.DelaySeconds", count)] = strconv.Itoa(msg.DelaySeconds)
 		}
